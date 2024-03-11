@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frontend Example</title>
+</head>
+<body>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    // Function to perform login and get JWT token
+    async function login() {
+      try {
+        const response = await axios.post('http://localhost:3000/login', {
+          username: 'yourUsername', // Replace with actual username
+          password: 'yourPassword' // Replace with actual password
+        });
+
+        const token = response.data.token;
+        return token;
+      } catch (error) {
+        console.error('Login failed:', error.response.data.error);
+        throw error;
+      }
+    }
+
+    // Function to fetch students using JWT token
+    async function getStudents(token) {
+      try {
+        const response = await axios.get('http://localhost:3000/students', {
+          headers: {
+            Authorization: token
+          }
+        });
+
+        const students = response.data.data;
+        console.log('Students:', students);
+      } catch (error) {
+        console.error('Failed to get students:', error.response.data.error);
+      }
+    }
+
+    // Example usage
+    async function main() {
+      try {
+        const token = await login();
+        await getStudents(token);
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
+    }
+
+    main();
+  </script>
+
+</body>
+</html>

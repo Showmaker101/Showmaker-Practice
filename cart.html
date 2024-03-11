@@ -1,0 +1,30 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>实时购物车价格更新</title>
+</head>
+<body>
+  <h1>购物车价格：<span id="cartPrice">0</span></h1>
+  <input type="number" id="priceInput" placeholder="输入新的价格">
+  <button onclick="updateCartPrice()">更新购物车价格</button>
+
+  <script>
+    const socket = new WebSocket('ws://localhost:3000');
+
+    socket.addEventListener('message', (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'cart_price') {
+        document.getElementById('cartPrice').innerText = data.data;
+      }
+    });
+
+    function updateCartPrice() {
+      const newPrice = document.getElementById('priceInput').value;
+      socket.send(JSON.stringify({ type: 'update_price', data: newPrice }));
+    }
+  </script>
+</body>
+</html>
